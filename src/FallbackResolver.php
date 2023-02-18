@@ -13,8 +13,6 @@ namespace Kdyby\Translation;
 class FallbackResolver
 {
 
-	use \Kdyby\StrictObjects\Scream;
-
 	/**
 	 * @var array
 	 */

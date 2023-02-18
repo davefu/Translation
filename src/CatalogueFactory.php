@@ -15,8 +15,6 @@ use Kdyby;
 class CatalogueFactory
 {
 
-	use \Kdyby\StrictObjects\Scream;
-
 	/**
 	 * @var \Kdyby\Translation\FallbackResolver
 	 */
