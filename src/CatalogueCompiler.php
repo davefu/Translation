@@ -12,9 +12,9 @@ namespace Kdyby\Translation;
 
 use Kdyby\Translation\Caching\PhpFileStorage;
 use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
+use Nette\Caching\Storage;
 use Nette\Caching\Storages\MemoryStorage;
-use Nette\PhpGenerator\Helpers as GeneratorHelpers;
+use Nette\PhpGenerator\Dumper;
 use Nette\PhpGenerator\PhpLiteral;
 
 class CatalogueCompiler
@@ -36,7 +36,7 @@ class CatalogueCompiler
 	private $catalogueFactory;
 
 	public function __construct(
-		IStorage $cacheStorage,
+		Storage $cacheStorage,
 		FallbackResolver $fallbackResolver,
 		CatalogueFactory $catalogueFactory
 	)
@@ -125,10 +125,11 @@ class CatalogueCompiler
 	{
 		$fallbackContent = '';
 		$current = new PhpLiteral('');
+		$dumper = new Dumper();
 		foreach ($this->fallbackResolver->compute($translator, $locale) as $fallback) {
 			$fallbackSuffix = new PhpLiteral(ucfirst(preg_replace('~[^a-z0-9_]~i', '_', $fallback)));
 
-			$fallbackContent .= GeneratorHelpers::format(<<<EOF
+			$fallbackContent .= $dumper->format(<<<EOF
 \$catalogue? = new MessageCatalogue(?, ?);
 \$catalogue?->addFallbackCatalogue(\$catalogue?);
 
@@ -137,7 +138,7 @@ EOF
 			$current = $fallbackSuffix;
 		}
 
-		$content = GeneratorHelpers::format(<<<EOF
+		$content = $dumper->format(<<<EOF
 use Kdyby\\Translation\\MessageCatalogue;
 
 \$catalogue = new MessageCatalogue(?, ?);

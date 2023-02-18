@@ -17,7 +17,7 @@
 		"issues": "https://github.com/kdyby/translation/issues"
 	},
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.2",
 		"latte/latte": "^2.5.2 || ^3.0",
 		"nette/caching": "^3.0",
 		"nette/di": "^3.0",
@@ -28,8 +28,8 @@
 		"nette/reflection": "^2.4.2@dev",
 		"nette/utils": "^3.0",
 		"psr/log": "^1.0",
-		"symfony/translation": "^3.4 || ^4.0",
-		"symfony/config": "^3.4 || ^4.0"
+		"symfony/translation": "^4.2",
+		"symfony/config": "^4.2"
 	},
 	"suggest": {
 		"kdyby/console": "If you wanna use extract command and much others, install also console.",

@@ -15,7 +15,7 @@ use Nette\Caching\Cache;
 /**
  * @internal
  */
-class PhpFileStorage extends \Nette\Caching\Storages\FileStorage implements \Nette\Caching\IStorage
+class PhpFileStorage extends \Nette\Caching\Storages\FileStorage implements \Nette\Caching\Storage
 {
 
 	/**

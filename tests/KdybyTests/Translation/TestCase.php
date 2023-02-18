@@ -15,7 +15,7 @@ use Kdyby\Monolog\DI\MonologExtension;
 use Kdyby\Translation\DI\TranslationExtension;
 use Nette\Configurator;
 use Nette\DI\Compiler;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 
 abstract class TestCase extends \Tester\TestCase
 {
@@ -51,7 +51,7 @@ abstract class TestCase extends \Tester\TestCase
 	{
 		$container = $this->createContainer($configName);
 		/** @var \Kdyby\Translation\Translator $translator */
-		$translator = $container->getByType(ITranslator::class);
+		$translator = $container->getByType(Translator::class);
 		// type hacking
 		return $translator;
 	}

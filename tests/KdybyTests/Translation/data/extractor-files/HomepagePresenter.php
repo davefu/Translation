@@ -36,7 +36,7 @@ class HomepagePresenter extends \Nette\Application\UI\Presenter
 		$form->addMultiSelect('i', $label = NULL, $items = NULL, $size = NULL);
 		$form->addSubmit('j', $caption = NULL);
 		$form->addButton('k', $caption);
-		$form->addImage('l', $src = NULL, $alt = NULL)
+		$form->addImageButton('l', $src = NULL, $alt = NULL)
 			->addCondition($form::EQUAL, 1)
 			->addRule($form::FILLED, 'The image is missing!', 4);
 

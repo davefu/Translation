@@ -50,7 +50,6 @@ use Symfony\Component\Translation\Formatter\IntlFormatterInterface;
 use Symfony\Component\Translation\Formatter\MessageFormatter;
 use Symfony\Component\Translation\Formatter\MessageFormatterInterface;
 use Symfony\Component\Translation\Loader\LoaderInterface;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 use Tracy\Debugger;
 use Tracy\IBarPanel;
@@ -130,17 +129,14 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 		$this->loadLocaleResolver($config);
 
 		$builder->addDefinition($this->prefix('helpers'))
-			->setClass(TemplateHelpers::class)
+			->setType(TemplateHelpers::class)
 			->setFactory($this->prefix('@default') . '::createTemplateHelpers');
 
 		$builder->addDefinition($this->prefix('fallbackResolver'))
-			->setClass(FallbackResolver::class);
+			->setType(FallbackResolver::class);
 
 		$builder->addDefinition($this->prefix('catalogueFactory'))
-			->setClass(CatalogueFactory::class);
-
-		$builder->addDefinition($this->prefix('selector'))
-			->setClass(MessageSelector::class);
+			->setType(CatalogueFactory::class);
 
 		if (interface_exists(IntlFormatterInterface::class)) {
 			$builder->addDefinition($this->prefix('intlFormatter'))
@@ -153,17 +149,17 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 			->setFactory(MessageFormatter::class);
 
 		$builder->addDefinition($this->prefix('extractor'))
-			->setClass(ChainExtractor::class);
+			->setType(ChainExtractor::class);
 
 		$this->loadExtractors();
 
 		$builder->addDefinition($this->prefix('writer'))
-			->setClass(TranslationWriter::class);
+			->setType(TranslationWriter::class);
 
 		$this->loadDumpers();
 
 		$builder->addDefinition($this->prefix('loader'))
-			->setClass(TranslationLoader::class);
+			->setType(TranslationLoader::class);
 
 		$loaders = $this->loadFromFile(__DIR__ . '/config/loaders.neon');
 		$this->loadLoaders($loaders, $config['loaders'] ?: array_keys($loaders));
@@ -178,17 +174,17 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('userLocaleResolver.param'))
-			->setClass(LocaleParamResolver::class)
+			->setType(LocaleParamResolver::class)
 			->setAutowired(FALSE);
 
 		$builder->addDefinition($this->prefix('userLocaleResolver.acceptHeader'))
-			->setClass(AcceptHeaderResolver::class);
+			->setType(AcceptHeaderResolver::class);
 
 		$builder->addDefinition($this->prefix('userLocaleResolver.session'))
-			->setClass(SessionResolver::class);
+			->setType(SessionResolver::class);
 
 		$chain = $builder->addDefinition($this->prefix('userLocaleResolver'))
-			->setClass(IUserLocaleResolver::class)
+			->setType(IUserLocaleResolver::class)
 			->setFactory(ChainResolver::class);
 
 		$resolvers = [];
@@ -231,7 +227,7 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 
 		foreach ($this->loadFromFile(__DIR__ . '/config/dumpers.neon') as $format => $class) {
 			$builder->addDefinition($this->prefix('dumper.' . $format))
-				->setClass($class)
+				->setType($class)
 				->addTag(self::TAG_DUMPER, $format);
 		}
 	}
@@ -245,7 +241,7 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 				continue;
 			}
 			$builder->addDefinition($this->prefix('loader.' . $format))
-				->setClass($class)
+				->setType($class)
 				->addTag(self::TAG_LOADER, $format);
 		}
 	}
@@ -256,7 +252,7 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 
 		foreach ($this->loadFromFile(__DIR__ . '/config/extractors.neon') as $format => $class) {
 			$builder->addDefinition($this->prefix('extractor.' . $format))
-				->setClass($class)
+				->setType($class)
 				->addTag(self::TAG_EXTRACTOR, $format);
 		}
 	}
@@ -277,12 +273,12 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 				->addSetup('addFilter', ['translate', [$this->prefix('@helpers'), 'translateFilterAware']]);
 		};
 
-		$latteFactoryService = $builder->getByType(LatteFactory::class) ?: $builder->getByType(ILatteFactory::class);
-		if (!$latteFactoryService || !self::isOfType($builder->getDefinition($latteFactoryService)->getClass(), LatteEngine::class)) {
+		$latteFactoryService = $builder->getByType(LatteFactory::class);
+		if (!$latteFactoryService || !self::isOfType($builder->getDefinition($latteFactoryService)->getType(), LatteEngine::class)) {
 			$latteFactoryService = 'nette.latteFactory';
 		}
 
-		if ($builder->hasDefinition($latteFactoryService) && (self::isOfType($builder->getDefinition($latteFactoryService)->getClass(), LatteFactory::class) || self::isOfType($builder->getDefinition($latteFactoryService)->getClass(), ILatteFactory::class))) {
+		if ($builder->hasDefinition($latteFactoryService) && self::isOfType($builder->getDefinition($latteFactoryService)->getType(), LatteFactory::class)) {
 			/** @var FactoryDefinition $latteFactory */
 			$latteFactory = $builder->getDefinition($latteFactoryService);
 			$registerToLatte($latteFactory);
@@ -434,7 +430,7 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 		try {
 			/** @var \Nette\DI\Definitions\ServiceDefinition $def */
 			$def = $builder->getDefinition($this->loaders[$format]);
-			$refl = ReflectionClassType::from($def->getEntity() ?: $def->getClass());
+			$refl = ReflectionClassType::from($def->getEntity() ?: $def->getType());
 			$method = $refl->getConstructor();
 			if ($method !== NULL && $method->getNumberOfRequiredParameters() > 1) {
 				return;

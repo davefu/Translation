@@ -172,7 +172,7 @@ class Translator extends \Symfony\Component\Translation\Translator implements \K
 		$parameters = $tmp;
 
 		if ($count !== NULL && is_scalar($count)) {
-			return $this->transChoice($message, $count, $parameters + ['%count%' => $count], $domain, $locale);
+			return $this->trans($message, $parameters + ['%count%' => $count], $domain, $locale);
 		}
 
 		return $this->trans($message, $parameters, $domain, $locale);

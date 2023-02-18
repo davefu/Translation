@@ -13,7 +13,7 @@ namespace Kdyby\Translation;
 /**
  * @method translate($message, $count = NULL, $parameters = array(), $domain = NULL, $locale = NULL);
  */
-interface ITranslator extends \Nette\Localization\ITranslator
+interface ITranslator extends \Nette\Localization\Translator
 {
 
 	// function translate($message, ...$parameters);
