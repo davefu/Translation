@@ -35,8 +35,8 @@ use Nette\Bridges\ApplicationLatte\LatteFactory;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\Definitions\FactoryDefinition;
+use Nette\DI\Definitions\Statement;
 use Nette\DI\Helpers;
-use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType as ClassTypeGenerator;
 use Nette\PhpGenerator\PhpLiteral;
 use Nette\Reflection\ClassType as ReflectionClassType;
@@ -72,25 +72,6 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 	const RESOLVER_REQUEST = 'request';
 	const RESOLVER_HEADER = 'header';
 	const RESOLVER_SESSION = 'session';
-
-	/**
-	 * @var mixed[]
-	 */
-	public $defaults = [
-		'whitelist' => NULL, // array('cs', 'en'),
-		'default' => 'en',
-		'logging' => NULL, //  TRUE for psr/log, or string for kdyby/monolog channel
-		// 'fallback' => array('en_US', 'en'), // using custom merge strategy becase Nette's config merger appends lists of values
-		'dirs' => ['%appDir%/lang', '%appDir%/locale'],
-		'cache' => PhpFileStorage::class,
-		'debugger' => '%debugMode%',
-		'resolvers' => [
-			self::RESOLVER_SESSION => FALSE,
-			self::RESOLVER_REQUEST => TRUE,
-			self::RESOLVER_HEADER => TRUE,
-		],
-		'loaders' => [],
-	];
 
 	/**
 	 * @var array
@@ -302,11 +283,15 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 		}
 
 		if ($builder->hasDefinition($latteFactoryService) && (self::isOfType($builder->getDefinition($latteFactoryService)->getClass(), LatteFactory::class) || self::isOfType($builder->getDefinition($latteFactoryService)->getClass(), ILatteFactory::class))) {
-			$registerToLatte($builder->getDefinition($latteFactoryService));
+			/** @var FactoryDefinition $latteFactory */
+			$latteFactory = $builder->getDefinition($latteFactoryService);
+			$registerToLatte($latteFactory);
 		}
 
 		if ($builder->hasDefinition('nette.latte')) {
-			$registerToLatte($builder->getDefinition('nette.latte'));
+			/** @var FactoryDefinition $latteServiceFactory */
+			$latteServiceFactory = $builder->getDefinition('nette.latte');
+			$registerToLatte($latteServiceFactory);
 		}
 
 		$applicationService = $builder->getByType(Application::class) ?: 'application';
@@ -416,7 +401,7 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 			return '*.*.' . $value;
 		}, array_keys($this->loaders));
 
-		foreach (Finder::findFiles($mask)->from($dirs) as $file) {
+		foreach (Finder::findFiles(...$mask)->from($dirs) as $file) {
 			/** @var \SplFileInfo $file */
 			if (!preg_match('~^(?P<domain>.*?)\.(?P<locale>[^\.]+)\.(?P<format>[^\.]+)$~', $file->getFilename(), $m)) {
 				continue;
@@ -502,8 +487,8 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 	}
 
 	/**
-	 * @param string|\stdClass $statement
-	 * @return \Nette\DI\Statement[]
+	 * @param string|Statement $statement
+	 * @return Statement[]
 	 */
 	protected static function filterArgs($statement)
 	{

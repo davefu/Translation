@@ -88,6 +88,8 @@ class TranslateMacros extends \Latte\Macros\MacroSet
 
 			return $writer->write('$_translator = ' . PrefixedTranslator::class . '::register($this, %node.word);');
 		}
+
+		return null;
 	}
 
 	/**

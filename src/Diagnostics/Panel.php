@@ -26,7 +26,7 @@ class Panel implements \Tracy\IBarPanel
 {
 
 	/**
-	 * @var \Kdyby\Translation\Translator
+	 * @var \Kdyby\Translation\Translator|null
 	 */
 	private $translator;
 
@@ -110,14 +110,15 @@ class Panel implements \Tracy\IBarPanel
 			foreach ($this->onRequestLocaleSnapshot as $i => $snapshot) {
 				$s = $i > 0 ? '<br>' : '';
 
-				/** @var \Nette\Application\Request[] $snapshot */
-				$params = $snapshot['request']->getParameters();
+				/** @var \Nette\Application\Request $request */
+				$request = $snapshot['request'];
+				$params = $request->getParameters();
 				$s .= '<tr><th width="10px">&nbsp;</th>' .
-					'<th>' . $h($snapshot['request']->getPresenterName() . (isset($params['action']) ? ':' . $params['action'] : '')) . '</th>' .
+					'<th>' . $h($request->getPresenterName() . (isset($params['action']) ? ':' . $params['action'] : '')) . '</th>' .
 					'<th>' . $h($snapshot['locale']) . '</th></tr>';
 
 				$l = 1;
-				/** @var mixed[][] $snapshot */
+				/** @var string|null $resolvedLocale */
 				foreach ($snapshot['resolvers'] as $name => $resolvedLocale) {
 					$s .= '<tr><td>' . ($l++) . '.</td><td>' . $h($name) . '</td><td>' . $h($resolvedLocale) . '</td></tr>';
 				}
@@ -279,7 +280,7 @@ class Panel implements \Tracy\IBarPanel
 
 	public function onRequest(Application $app, Request $request)
 	{
-		if (!$this->translator) {
+		if ($this->translator === null) {
 			return;
 		}
 

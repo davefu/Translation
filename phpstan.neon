@@ -1,11 +1,25 @@
+includes:
+#	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
+	- vendor/phpstan/phpstan-nette/extension.neon
+	- vendor/phpstan/phpstan-nette/rules.neon
+
 parameters:
+	level: 5
+	treatPhpDocTypesAsCertain: false
+	paths:
+		- src
+		- tests/KdybyTests
 	ignoreErrors:
-		- '#Constant TEMP_DIR not found#'
-		# Optional arguments
-		- "#Casting to string something that's already string#"
-		- "#Casting to int something that's already int#"
-		- "#Casting to array something that's already array#"
-		# Other errors
-		- '#Access to an undefined property Nette\\Http\\SessionSection\|stdClass::\$locale#'
-		- '#Parameter \#1 \$locale of method Symfony\\Component\\Translation\\Translator::setLocale\(\) expects string, string\|null given#'
-		- '#Array \(array\<Symfony\\Component\\Translation\\Loader\\LoaderInterface\>\) does not accept object#'
+		- "#Unsafe usage of new static\\(\\)\\.#"
+		-
+			message: "#Comparison operation .<. between \\d+ and \\d+ is always (true|false)\\.#"
+			count: 2
+			path: src/Latte\TranslateMacros.php
+		-
+			message: "#Comparison operation .>=. between \\d+ and 20900 is always (true|false)\\.#"
+			count: 1
+			path: src/Latte\TranslateMacros.php
+		-
+			message: "#Result of && is always (true|false)\\.#"
+			count: 1
+			path: src/Latte\TranslateMacros.php

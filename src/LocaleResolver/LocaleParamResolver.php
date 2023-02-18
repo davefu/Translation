@@ -23,7 +23,7 @@ class LocaleParamResolver implements \Kdyby\Translation\IUserLocaleResolver
 	private $request;
 
 	/**
-	 * @var \Kdyby\Translation\Translator
+	 * @var \Kdyby\Translation\Translator|null
 	 */
 	private $translator;
 
@@ -45,7 +45,7 @@ class LocaleParamResolver implements \Kdyby\Translation\IUserLocaleResolver
 
 		$this->request = $request;
 
-		if (!$this->translator) {
+		if ($this->translator === null) {
 			return;
 		}
 
