@@ -10,18 +10,13 @@
 
 namespace Kdyby\Translation\Caching;
 
-use Nette\Caching\Cache;
-
 /**
  * @internal
  */
 class PhpFileStorage extends \Nette\Caching\Storages\FileStorage implements \Nette\Caching\Storage
 {
 
-	/**
-	 * @var string
-	 */
-	public $hint;
+	public string $hint;
 
 	/**
 	 * Additional cache structure
@@ -33,11 +28,8 @@ class PhpFileStorage extends \Nette\Caching\Storages\FileStorage implements \Net
 
 	/**
 	 * Reads cache data from disk.
-	 *
-	 * @param array $meta
-	 * @return mixed
 	 */
-	protected function readData(array $meta)
+	protected function readData(array $meta): mixed
 	{
 		return [
 			'file' => $meta[self::FILE],
@@ -47,9 +39,6 @@ class PhpFileStorage extends \Nette\Caching\Storages\FileStorage implements \Net
 
 	/**
 	 * Returns file name.
-	 *
-	 * @param string $key
-	 * @return string
 	 */
 	protected function getCacheFile(string $key): string
 	{

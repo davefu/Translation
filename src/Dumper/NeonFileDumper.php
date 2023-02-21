@@ -24,7 +24,7 @@ class NeonFileDumper extends \Symfony\Component\Translation\Dumper\FileDumper
 	 */
 	public function formatCatalogue(MessageCatalogue $messages, $domain, array $options = [])
 	{
-		return Neon::encode($messages->all($domain), Neon::BLOCK);
+		return Neon::encode($messages->all($domain), true);
 	}
 
 	/**
@@ -32,7 +32,7 @@ class NeonFileDumper extends \Symfony\Component\Translation\Dumper\FileDumper
 	 */
 	protected function format(MessageCatalogue $messages, $domain)
 	{
-		return Neon::encode($messages->all($domain), Neon::BLOCK);
+		return Neon::encode($messages->all($domain), true);
 	}
 
 	/**

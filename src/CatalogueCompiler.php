@@ -56,7 +56,7 @@ class CatalogueCompiler
 
 	public function invalidateCache()
 	{
-		$this->cache->clean([Cache::ALL => TRUE]);
+		$this->cache->clean([Cache::All => TRUE]);
 	}
 
 	/**

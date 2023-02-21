@@ -13,7 +13,7 @@ namespace KdybyTests\Translation;
 use Kdyby\Console\DI\ConsoleExtension;
 use Kdyby\Monolog\DI\MonologExtension;
 use Kdyby\Translation\DI\TranslationExtension;
-use Nette\Configurator;
+use Nette\Bootstrap\Configurator;
 use Nette\DI\Compiler;
 use Nette\Localization\Translator;
 
@@ -28,7 +28,7 @@ abstract class TestCase extends \Tester\TestCase
 	{
 		$config = new Configurator();
 		$config->setTempDirectory(TEMP_DIR);
-		$config->addParameters(['appDir' => __DIR__]);
+		$config->addStaticParameters(['appDir' => __DIR__]);
 		TranslationExtension::register($config);
 		MonologExtension::register($config);
 		$config->onCompile[] = function ($config, Compiler $compiler): void {

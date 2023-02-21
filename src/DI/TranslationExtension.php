@@ -32,7 +32,7 @@ use Latte\Engine as LatteEngine;
 use Nette\Application\Application;
 use Nette\Bridges\ApplicationLatte\ILatteFactory;
 use Nette\Bridges\ApplicationLatte\LatteFactory;
-use Nette\Configurator;
+use Nette\Bootstrap\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Definitions\Statement;
@@ -472,9 +472,6 @@ class TranslationExtension extends \Nette\DI\CompilerExtension
 		return FALSE;
 	}
 
-	/**
-	 * @param \Nette\Configurator $configurator
-	 */
 	public static function register(Configurator $configurator)
 	{
 		$configurator->onCompile[] = function ($config, Compiler $compiler) {
